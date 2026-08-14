@@ -12,8 +12,8 @@ function HomePage() {
         title="React-componenten begrijpen"
         description="Ik leer gegevens met props door te geven."
               />
-              
-      <TrainingCounter />
+
+      <TrainingCounter target={5} />
 
       <VersionBadge version={__APP_VERSION__} />
     </main>

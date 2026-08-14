@@ -1,3 +1,4 @@
+import { TrainingTopics } from '../components/TrainingTopics'
 import VersionBadge from '../components/VersionBadge'
 import { TrainingGoal } from '../components/TrainingGoal'
 import { TrainingCounter } from '../components/TrainingCounter'
@@ -12,6 +13,8 @@ function HomePage() {
         title="React-componenten begrijpen"
         description="Ik leer gegevens met props door te geven."
               />
+
+        <TrainingTopics />
 
       <TrainingCounter target={5} />
 

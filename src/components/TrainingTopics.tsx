@@ -1,4 +1,4 @@
-import { type FormEvent, useState } from 'react'
+import { type FormEvent, useEffect, useState } from 'react'
 type Topic = {
   id: number
   name: string
@@ -11,10 +11,28 @@ const initialTopics: Topic[] = [
   { id: 4, name: 'Voorwaardelijke weergave' },
   { id: 5, name: 'Lijsten met map' },
 ]
+const STORAGE_KEY = 'react-training-topics'
+function loadTopics(): Topic[] {
+  const savedTopics = localStorage.getItem(STORAGE_KEY)
+
+  if (savedTopics === null) {
+    return initialTopics
+  }
+
+  try {
+    return JSON.parse(savedTopics) as Topic[]
+  } catch {
+    localStorage.removeItem(STORAGE_KEY)
+    return initialTopics
+  }
+}
 
 export function TrainingTopics() {
-    const [topics, setTopics] = useState(initialTopics)
+    const [topics, setTopics] = useState(loadTopics)
     const [newTopic, setNewTopic] = useState('')
+    useEffect(() => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(topics))
+    }, [topics])
     function handleSubmit(event: FormEvent<HTMLFormElement>) {
   event.preventDefault()
 

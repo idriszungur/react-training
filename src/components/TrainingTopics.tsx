@@ -1,3 +1,5 @@
+import { TopicSearch } from './TopicSearch'
+
 import { type FormEvent, useEffect, useState } from 'react'
 type Topic = {
   id: number
@@ -63,21 +65,10 @@ function handleDelete(id: number) {
   return (
     <section>
       <h2>Behandelde onderwerpen</h2>
-      <label htmlFor="topic-search">Onderwerpen zoeken</label>
-
-<input
-  id="topic-search"
-  type="search"
-  value={searchTerm}
-  onChange={(event) => setSearchTerm(event.target.value)}
-/>
-<button
-  type="button"
-  onClick={() => setSearchTerm('')}
-  disabled={searchTerm === ''}
->
-  Zoekopdracht wissen
-</button>
+      <TopicSearch
+    searchTerm={searchTerm}
+    onSearchTermChange={setSearchTerm}
+  />
       <form onSubmit={handleSubmit}>
 
   <label htmlFor="new-topic">Nieuw onderwerp</label>

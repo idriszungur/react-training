@@ -1,8 +1,7 @@
+import { TopicList } from './TopicList'
+import { TopicSearch } from './TopicSearch'
 import { type FormEvent, useEffect, useState } from 'react'
-type Topic = {
-  id: number
-  name: string
-}
+import type { Topic } from '../types/Topic'
 
 const initialTopics: Topic[] = [
   { id: 1, name: 'Componenten' },
@@ -63,21 +62,10 @@ function handleDelete(id: number) {
   return (
     <section>
       <h2>Behandelde onderwerpen</h2>
-      <label htmlFor="topic-search">Onderwerpen zoeken</label>
-
-<input
-  id="topic-search"
-  type="search"
-  value={searchTerm}
-  onChange={(event) => setSearchTerm(event.target.value)}
-/>
-<button
-  type="button"
-  onClick={() => setSearchTerm('')}
-  disabled={searchTerm === ''}
->
-  Zoekopdracht wissen
-</button>
+      <TopicSearch
+    searchTerm={searchTerm}
+    onSearchTermChange={setSearchTerm}
+  />
       <form onSubmit={handleSubmit}>
 
   <label htmlFor="new-topic">Nieuw onderwerp</label>
@@ -104,17 +92,7 @@ function handleDelete(id: number) {
 ) : filteredTopics.length === 0 ? (
   <p>Geen onderwerpen gevonden voor “{searchTerm}”.</p>
 ) : (
-  <ul>
-    {filteredTopics.map((topic) => (
-      <li key={topic.id}>
-        {topic.name}
-
-        <button type="button" onClick={() => handleDelete(topic.id)}>
-          Verwijderen
-        </button>
-      </li>
-    ))}
-  </ul>
+<TopicList topics={filteredTopics} onDelete={handleDelete} />
 )}
     </section>
   )

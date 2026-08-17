@@ -30,6 +30,12 @@ function loadTopics(): Topic[] {
 export function TrainingTopics() {
     const [topics, setTopics] = useState(loadTopics)
     const [newTopic, setNewTopic] = useState('')
+    const [searchTerm, setSearchTerm] = useState('')
+    const normalizedSearchTerm = searchTerm.trim().toLowerCase()
+
+const filteredTopics = topics.filter((topic) =>
+  topic.name.toLowerCase().includes(normalizedSearchTerm),
+)
     useEffect(() => {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(topics))
     }, [topics])
@@ -57,6 +63,21 @@ function handleDelete(id: number) {
   return (
     <section>
       <h2>Behandelde onderwerpen</h2>
+      <label htmlFor="topic-search">Onderwerpen zoeken</label>
+
+<input
+  id="topic-search"
+  type="search"
+  value={searchTerm}
+  onChange={(event) => setSearchTerm(event.target.value)}
+/>
+<button
+  type="button"
+  onClick={() => setSearchTerm('')}
+  disabled={searchTerm === ''}
+>
+  Zoekopdracht wissen
+</button>
       <form onSubmit={handleSubmit}>
 
   <label htmlFor="new-topic">Nieuw onderwerp</label>
@@ -72,24 +93,28 @@ function handleDelete(id: number) {
     Onderwerp toevoegen
   </button>
 </form>
-<p>Aantal onderwerpen: {topics.length}</p>
+<p>
+  Zichtbaar: {filteredTopics.length} van {topics.length} onderwerpen
+</p>
 <button type="button" onClick={() => setTopics(initialTopics)}>
   Herstel basislijst
 </button>
 {topics.length === 0 ? (
-<p>Nog geen onderwerpen toegevoegd.</p>
+  <p>Nog geen onderwerpen toegevoegd.</p>
+) : filteredTopics.length === 0 ? (
+  <p>Geen onderwerpen gevonden voor “{searchTerm}”.</p>
 ) : (
-<ul>
-{topics.map((topic) => (
-<li key={topic.id}>
-  {topic.name}
+  <ul>
+    {filteredTopics.map((topic) => (
+      <li key={topic.id}>
+        {topic.name}
 
-  <button type="button" onClick={() => handleDelete(topic.id)}>
-    Verwijderen
-  </button>
-</li>
-))}
-</ul>
+        <button type="button" onClick={() => handleDelete(topic.id)}>
+          Verwijderen
+        </button>
+      </li>
+    ))}
+  </ul>
 )}
     </section>
   )

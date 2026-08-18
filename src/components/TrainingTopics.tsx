@@ -30,6 +30,8 @@ export function TrainingTopics() {
     const [topics, setTopics] = useState(loadTopics)
     const [newTopic, setNewTopic] = useState('')
     const [searchTerm, setSearchTerm] = useState('')
+    const [editingTopicId, setEditingTopicId] = useState<number | null>(null)
+    const [editName, setEditName] = useState('')
     const normalizedSearchTerm = searchTerm.trim().toLowerCase()
 
 const filteredTopics = topics.filter((topic) =>
@@ -59,6 +61,10 @@ function handleDelete(id: number) {
   const remainingTopics = topics.filter((topic) => topic.id !== id)
   setTopics(remainingTopics)
 }
+function handleStartEdit(topic: Topic) {
+  setEditingTopicId(topic.id)
+  setEditName(topic.name)
+}
   return (
     <section>
       <h2>Behandelde onderwerpen</h2>
@@ -87,12 +93,19 @@ function handleDelete(id: number) {
 <button type="button" onClick={() => setTopics(initialTopics)}>
   Herstel basislijst
 </button>
+  {editingTopicId !== null && <p>Je bewerkt: {editName}</p>}
 {topics.length === 0 ? (
   <p>Nog geen onderwerpen toegevoegd.</p>
 ) : filteredTopics.length === 0 ? (
   <p>Geen onderwerpen gevonden voor “{searchTerm}”.</p>
 ) : (
-<TopicList topics={filteredTopics} onDelete={handleDelete} />
+
+
+  <TopicList
+    topics={filteredTopics}
+    onEdit={handleStartEdit}
+    onDelete={handleDelete}
+  />
 )}
     </section>
   )

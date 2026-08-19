@@ -30,6 +30,8 @@ export function TrainingTopics() {
     const [topics, setTopics] = useState(loadTopics)
     const [newTopic, setNewTopic] = useState('')
     const [searchTerm, setSearchTerm] = useState('')
+    const [editingTopicId, setEditingTopicId] = useState<number | null>(null)
+    const [editName, setEditName] = useState('')
     const normalizedSearchTerm = searchTerm.trim().toLowerCase()
 
 const filteredTopics = topics.filter((topic) =>
@@ -58,6 +60,43 @@ const filteredTopics = topics.filter((topic) =>
 function handleDelete(id: number) {
   const remainingTopics = topics.filter((topic) => topic.id !== id)
   setTopics(remainingTopics)
+
+  if (editingTopicId === id) {
+    setEditingTopicId(null)
+    setEditName('')
+  }
+}
+function handleResetTopics() {
+  setTopics(initialTopics)
+  handleCancelEdit()
+}
+function handleStartEdit(topic: Topic) {
+  setEditingTopicId(topic.id)
+  setEditName(topic.name)
+}
+function handleEditSubmit(event: FormEvent<HTMLFormElement>) {
+  event.preventDefault()
+
+  const trimmedEditName = editName.trim()
+
+  if (editingTopicId === null || trimmedEditName === '') {
+    return
+  }
+
+  const updatedTopics = topics.map((topic) =>
+    topic.id === editingTopicId
+      ? { ...topic, name: trimmedEditName }
+      : topic,
+  )
+
+  setTopics(updatedTopics)
+  setEditingTopicId(null)
+  setEditName('')
+}
+
+function handleCancelEdit() {
+  setEditingTopicId(null)
+  setEditName('')
 }
   return (
     <section>
@@ -84,15 +123,41 @@ function handleDelete(id: number) {
 <p>
   Zichtbaar: {filteredTopics.length} van {topics.length} onderwerpen
 </p>
-<button type="button" onClick={() => setTopics(initialTopics)}>
+<button type="button" onClick={handleResetTopics}>
   Herstel basislijst
 </button>
+{editingTopicId !== null && (
+<form onSubmit={handleEditSubmit}>
+  <label htmlFor="edit-topic">Onderwerp bewerken</label>
+
+  <input
+    id="edit-topic"
+    type="text"
+    value={editName}
+    onChange={(event) => setEditName(event.target.value)}
+  />
+
+  <button type="submit" disabled={editName.trim() === ''}>
+    Wijziging opslaan
+  </button>
+
+  <button type="button" onClick={handleCancelEdit}>
+    Annuleren
+  </button>
+</form>
+)}
 {topics.length === 0 ? (
   <p>Nog geen onderwerpen toegevoegd.</p>
 ) : filteredTopics.length === 0 ? (
   <p>Geen onderwerpen gevonden voor “{searchTerm}”.</p>
 ) : (
-<TopicList topics={filteredTopics} onDelete={handleDelete} />
+
+
+  <TopicList
+    topics={filteredTopics}
+    onEdit={handleStartEdit}
+    onDelete={handleDelete}
+  />
 )}
     </section>
   )

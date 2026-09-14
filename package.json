@@ -4,11 +4,15 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
+  "dev": "vite",
+  "dev:local": "vite",
+  "dev:dev": "vite --mode dev",
+  "dev:acc": "vite --mode acc",
+  "dev:prd": "vite --mode prd",
+  "build": "tsc -b && vite build",
+  "lint": "eslint .",
+  "preview": "vite preview"
+},
   "dependencies": {
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
